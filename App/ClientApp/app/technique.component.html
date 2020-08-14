@@ -1,0 +1,123 @@
+﻿<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" />
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <style>
+        body {
+            text-align: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+
+        table {
+            width: 90%;
+            margin: auto;
+        }
+
+        i:hover {
+            color: orange;
+        }
+
+        i {
+            font-size: 0.7em;
+        }
+    </style>
+</head>
+<body class="bg-dark">
+
+    <h2 class="text-white display-2">Техника</h2><!--<a [href]="fileUrl" download="file.xlsx" (click)="exportAsXLSX()">DownloadFile</a>--><a href="/api/products/Export" download>Скачать</a>
+    <!--<button type="button" value="dowload" (click)="exportAsXLSX()" class="btn btn-sm btn-warning" ></button>-->
+    <div class="form-group " style=" width: 10%; margin-left:82%">
+        <input type="text" class="form-control pull-right" [(ngModel)]="searchStr " placeholder="Поиск по таблице">
+        <input type="button" value="Выход" (click)="exit()" class="btn btn-sm btn-warning" />
+    </div>
+    <table class="table table-sm table-inverse bg-dark" id="mytable">
+        <thead>
+            <tr>
+                <td>
+                    <strong><em>Наименование</em></strong><i class="glyphicon glyphicon-sort-by-attributes bg-dark" aria-hidden="true" type="submit" title="Сортировка по возрастанию" (click)="sort('Name','Asc')"></i><i class="glyphicon glyphicon-sort-by-attributes-alt bg-dark" aria-hidden="true" type="submit" title="Сортировка по убыванию" (click)="sort('Name','Dsc')"></i>
+                </td>
+                <td><strong><em>Модель </em></strong><i class="glyphicon glyphicon-sort-by-attributes bg-dark" aria-hidden="true" type="submit" title="Сортировка по возрастанию" (click)="sort('Model','Asc')"></i><i class="glyphicon glyphicon-sort-by-attributes-alt bg-dark" aria-hidden="true" type="submit" title="Сортировка по убыванию" (click)="sort('Model','Dsc')"></i></td>
+                <td><strong><em>Номер</em></strong><i class="glyphicon glyphicon-sort-by-attributes bg-dark" aria-hidden="true" type="submit" title="Сортировка по возрастанию" (click)="sort('Number','Asc')"></i><i class="glyphicon glyphicon-sort-by-attributes-alt bg-dark" aria-hidden="true" type="submit" title="Сортировка по убыванию" (click)="sort('Number','Dsc')"></i></td>
+                <td><strong><em>Количество</em></strong><i class="glyphicon glyphicon-sort-by-attributes bg-dark" aria-hidden="true" type="submit" title="Сортировка по возрастанию" (click)="sort('Amount','Asc')"></i><i class="glyphicon glyphicon-sort-by-attributes-alt bg-dark" aria-hidden="true" type="submit" title="Сортировка по убыванию" (click)="sort('Amount','Dsc')"></i></td>
+                <td><strong><em>Статус</em></strong><i class="glyphicon glyphicon-sort-by-attributes bg-dark" aria-hidden="true" type="submit" title="Сортировка по возрастанию" (click)="sort('Status','Asc')"></i><i class="glyphicon glyphicon-sort-by-attributes-alt bg-dark" aria-hidden="true" type="submit" title="Сортировка по убыванию" (click)="sort('Status','Dsc')"></i></td>
+                <td><strong><em>Примечание</em></strong></td>
+                <td><strong><em>Действие</em></strong></td>
+                <td><i class="glyphicon glyphicon-plus" aria-hidden="true" role="button" (click)="add()"></i></td>
+            </tr>
+        </thead>
+        <tbody>
+
+            <tr *ngFor="let p of techniques | search:searchStr ">
+                <ng-template [ngIf]="technique?.id != p.id" [ngIfElse]="createOrEdit">
+                    <td>{{p?.name}}</td>
+                    <td>{{p?.model}}</td>
+                    <td>{{p?.number}}</td>
+                    <td>{{p?.amount}}</td>
+                    <ng-template [ngIf]="p?.status == 0" [ngIfElse]="unset">
+                        <td>Используется</td>
+                    </ng-template>
+                    <ng-template #unset>
+                        <td>Не используется</td>
+                    </ng-template>
+                    <td>{{p?.notation}}</td>
+                    <td>
+                        <i class="glyphicon glyphicon-pencil" aria-hidden="true" role="button" (click)="editProduct(p)" title="Редактировать"></i>&nbsp;
+                        <i class="glyphicon glyphicon-trash" aria-hidden="true" role="button" (click)="delete(p)" title="Удалить"></i>
+                    </td>
+                </ng-template>
+            </tr>
+            <tr *ngIf="create; then createOrEdit"></tr>
+
+        </tbody>
+    </table>
+</body>
+
+<!--шаблон для редактирования-->
+<ng-template #createOrEdit>
+    <td>
+        <input type="text" [(ngModel)]="technique.name" class="form-control" name="name" #name="ngModel" required placeholder="Наименование" />
+        <div [hidden]="name.valid || name.untouched" class="alert alert-danger">
+            name invalid
+        </div>
+    </td>
+    <td>
+        <input type="text" [(ngModel)]="technique.model" class="form-control" name="model" #model="ngModel" required placeholder="Модель" />
+        <div [hidden]="model.valid || model.untouched" class="alert alert-danger">
+            model invalid
+        </div>
+    </td>
+    <td>
+        <input type="number" [(ngModel)]="technique.number" class="form-control" name="number" #number="ngModel" ng-minlength="5" required placeholder="Номер" />
+        <div [hidden]="number.valid || number.untouched" class="alert alert-danger">
+            number invalid
+        </div>
+    </td>
+    <td>
+        <input type="number" [(ngModel)]="technique.amount" class="form-control" name="amount" #amount="ngModel" required placeholder="Количество" />
+        <div [hidden]="amount.valid || amount.untouched" class="alert alert-danger">
+            amount invalid
+        </div>
+    </td>
+    <td>
+        <select class="form-control custom-select" style="height:78%" [(ngModel)]="technique.status" name="status" #status="ngModel" required>
+            <!--<option [ngValue]="undefined" disabled selected> Please select one option </option>-->
+            <option value="{{ values.Used }}">Используется</option>
+            <option value="{{ values.DontUsed }}">Не используется</option>
+        </select>
+        <div [hidden]="status.valid || status.untouched" class="alert alert-danger">
+            status invalid
+        </div>
+    </td>
+    <td>
+        <input type="text" [(ngModel)]="technique.notation" class="form-control" />
+    </td>
+    <td>
+        <input type="button" value="Сохранить" (click)="save()" class="btn btn-sm btn-success" [disabled]="name.invalid || model.invalid || number.invalid || amount.invalid || status.invalid" />
+        <input type="button" value="Отмена" (click)="cancel()" class="btn btn-sm btn-warning" />
+    </td>
+</ng-template>
+
+

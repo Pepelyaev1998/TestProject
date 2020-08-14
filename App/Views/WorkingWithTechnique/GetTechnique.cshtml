@@ -1,0 +1,63 @@
+﻿@model App.Models.Technique
+<!DOCTYPE html>
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <style>
+        td {
+            width: 70px;
+        }
+
+        span {
+            color: white;
+        }
+    </style>
+    <title>Technique</title>
+</head>
+<body class="bg-secondary">
+    <div class="row  justify-content-center align-items-center ">
+        @using (Html.BeginForm("GetTechniqueList", "WorkingWithTechnique", FormMethod.Post, new { @class = "bg-dark justify-content-center align-items-center", role = "form" }))
+        {<div class="navbar navbar-inverse navbar-fixed-top">
+                <div class="container">
+                    <h2 class="text-white">Техника</h2>
+                    <table class="table table-sm table table-striped table-dark">
+                        <thead>
+                            <tr>
+                                <th>Наименование</th>
+                                <th>Модель</th>
+                                <th>Номер</th>
+                                <th>Количество</th>
+                                <th>Статус</th>
+                                <th>Примечание</th>
+                                <th>Действие</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td> @Model.Name</td>
+                                <td> @Model.Model</td>
+                                <td> @Model.Number</td>
+                                <td>@Model.Amount</td>
+                                <td>@Html.DisplayFor(x => Model.Status)</td>
+                                <td>@Model.Notation</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                            <span>Action</span>
+                                        </button>
+                                        <ul class="dropdown-menu bg-secondary">
+                                            <li><a href="~/WorkingWithTechnique/Update/@Model.Id"><span>Редактировать</span></a></li>
+                                            <li><a href="~/WorkingWithTechnique/Delete/@Model.Id"><span>Удалить</span></a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <a href="~/WorkingWithTechnique/Create" class="btn btn-info" role="button">Add new technique</a>
+                </div>
+            </div>}
+    </div>
+</body>

@@ -1,0 +1,55 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <Configurations>Debug;Release;Web.config</Configurations>
+    <UserSecretsId>55e01983-4adb-4d1a-8c4a-85bff3c71af7</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="ClientApp\app.module.ts" />
+    <None Remove="ClientApp\app\search.pipe.ts" />
+    <None Remove="ClientApp\app\status.ts" />
+    <None Remove="ClientApp\app\technique.component.html" />
+    <None Remove="ClientApp\app\technique.component.ts" />
+    <None Remove="ClientApp\app\technique.guard.ts" />
+    <None Remove="ClientApp\app\TokenInterceptor.ts" />
+    <None Remove="ClientApp\main.ts" />
+    <None Remove="ClientApp\polyfills.ts" />
+    <None Remove="webpack.config.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TypeScriptCompile Remove="ClientApp\app\login.component.ts" />
+    <TypeScriptCompile Remove="ClientApp\app\login.service.ts" />
+    <TypeScriptCompile Remove="ClientApp\app\start.component.ts" />
+    <TypeScriptCompile Remove="ClientApp\app\technique.service.ts" />
+    <TypeScriptCompile Remove="ClientApp\app\technique.ts" />
+    <TypeScriptCompile Remove="ClientApp\app\user.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="ClientApp\app\technique.component.html" />
+    <Content Include="webpack.config.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EPPlus.Core" Version="1.5.4" />
+    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.7" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.jQuery.Unobtrusive.Ajax" Version="3.2.6" />
+    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="3.7.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.10" />
+    <PackageReference Include="NPOI" Version="2.4.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\App.BLL\App.BLL.csproj" />
+    <ProjectReference Include="..\App.Common\App.Common.csproj" />
+  </ItemGroup>
+
+</Project>

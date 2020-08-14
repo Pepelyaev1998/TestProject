@@ -1,0 +1,126 @@
+﻿@model App.Models.Technique
+<html>
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</head>
+<body>
+</body>
+</html>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" />
+
+<style>
+    .form-width {
+        max-width: 25rem;
+    }
+
+    .has-float-label {
+        position: relative;
+    }
+
+        .has-float-label label {
+            position: absolute;
+            left: 0;
+            top: 0;
+            cursor: text;
+            font-size: 75%;
+            opacity: 1;
+            -webkit-transition: all .2s;
+            transition: all .2s;
+            top: -.5em;
+            left: 0.75rem;
+            z-index: 3;
+            line-height: 1;
+            padding: 0 1px;
+        }
+
+            .has-float-label label::after {
+                content: " ";
+                display: block;
+                position: absolute;
+                background: white;
+                height: 2px;
+                top: 50%;
+                left: -.2em;
+                right: -.2em;
+                z-index: -1;
+            }
+
+        .has-float-label .form-control::-webkit-input-placeholder {
+            opacity: 1;
+            -webkit-transition: all .2s;
+            transition: all .2s;
+        }
+
+        .has-float-label .form-control:placeholder-shown:not(:focus)::-webkit-input-placeholder {
+            opacity: 0;
+        }
+
+        .has-float-label .form-control:placeholder-shown:not(:focus) + label {
+            font-size: 150%;
+            opacity: .5;
+            top: .3em;
+        }
+
+    .input-group .has-float-label {
+        display: table-cell;
+    }
+
+        .input-group .has-float-label .form-control {
+            border-radius: 0.25rem;
+        }
+
+        .input-group .has-float-label:not(:last-child) .form-control {
+            border-bottom-right-radius: 0;
+            border-top-right-radius: 0;
+        }
+
+        .input-group .has-float-label:not(:first-child) .form-control {
+            border-bottom-left-radius: 0;
+            border-top-left-radius: 0;
+            margin-left: -1px;
+        }
+</style>
+<div class="p-x-1 p-y-3  bg-secondary h-100">
+    @using (Html.BeginForm("Create", "WorkingWithTechnique", FormMethod.Post, new { @class = "card card-block m-x-auto bg-faded form-width" }))
+    {@Html.ValidationSummary(true)
+    <legend class="m-b-1 text-xs-center">Добавление</legend>
+    <div class="form-group input-group">
+        <span class="has-float-label">
+            @Html.TextBoxFor(x => x.Name, new { @class = "form-control", @type = "text", @placeholder = "Наименование" })
+            <span class="text-danger">    @Html.ValidationMessageFor(x => x.Name)</span>
+            <label>Наименование</label>
+        </span>
+
+        <span class="has-float-label">
+            @Html.TextBoxFor(x => x.Model, new { @class = "form-control", @type = "text", @placeholder = "Модель" })
+            <span class="text-danger">   @Html.ValidationMessageFor(x => x.Model)</span>
+            <label>Модель</label>
+        </span>
+    </div>
+    <div class="form-group has-float-label">
+        @Html.TextBoxFor(x => x.Number, new { @class = "form-control", @type = "text", @placeholder = "Номер" })
+        <span class="text-danger">    @Html.ValidationMessageFor(x => x.Number)</span>
+        <label>Номер</label>
+    </div>
+    <div class="form-group has-float-label">
+        @Html.TextBoxFor(x => x.Amount, new { @class = "form-control", @type = "text", @placeholder = "Количество" })
+        <span class="text-danger"> @Html.ValidationMessageFor(x => x.Amount)</span>
+        <label>Количество</label>
+    </div>
+    <div class="form-group has-float-label">
+        @Html.DropDownListFor(x => (x.Status), new SelectList(new[] { new { Status = 0, Name = "Используется" }, new { Status = 1, Name = "Не используется" }, }, "Status", "Name"), new { @class = "form-control custom-select" })
+
+        <label>Статус</label>
+    </div>
+    <div class="form-group has-float-label">
+        @Html.TextBoxFor(x => x.Notation, new { @class = "form-control", @type = "text", @placeholder = "Примечание" })
+        <label>Примечание</label>
+    </div>
+    <div class="text-xs-center">
+        <button class="btn btn-block btn-primary" type="submit">Добавить</button>
+    </div>
+    }
+</div>
+
+
