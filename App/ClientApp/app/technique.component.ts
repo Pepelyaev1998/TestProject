@@ -1,9 +1,12 @@
-﻿import { Component, OnInit } from '@angular/core';
+﻿
+import { Component, OnInit } from '@angular/core';
 import { TechniqueService } from './technique.service';
 import { Technique } from './technique';
 import { Status } from './status';
 import { LoginService } from './login.service';
 import { DomSanitizer } from '@angular/platform-browser';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app',
@@ -17,14 +20,56 @@ export class TechniqueComponent implements OnInit {
     searchStr = '';
     values = Status;
     fileUrl = '';
+    myForm: FormGroup;
+    //private isModalDialogVisible: boolean = false;
+    showBlock: boolean = false;
+    public showBlockHidden() {
+        this.showBlock = !this.showBlock;
+    }
+    //public showDialog() {
+    //    this.isModalDialogVisible = true;
+    //}
+
+    //public closeModal(isConfirmed: boolean) {
+    //    this.isModalDialogVisible = false;
+
+    //}
     exportAsXLSX(): void {
         this.techniqueService.exportToExel().subscribe();
     }
     exit() {
         this.logServ.logout();
     }
-    constructor(private techniqueService: TechniqueService, private logServ: LoginService, private sanitizer: DomSanitizer) { }
+    location() {
+        this.router.navigate(['/location']);
+    }
+    UpdateForm() {
+        this.myForm = new FormGroup({
 
+            "Name": new FormControl("", [Validators.required, Validators.max(20)]),
+            "Model": new FormControl("", Validators.required),
+            "Number": new FormControl("", Validators.required),
+            "Amount": new FormControl("", Validators.required),
+            "Status": new FormControl("", Validators.required),
+            "Notation": new FormControl("", Validators.maxLength(20))
+        });
+    }
+    constructor(private techniqueService: TechniqueService, private logServ: LoginService, private router: Router) {
+        this.myForm = new FormGroup({
+
+            "Name": new FormControl("", [Validators.required, Validators.max(20)]),
+            "Model": new FormControl("", Validators.required),
+            "Number": new FormControl("", Validators.required),
+            "Amount": new FormControl("", Validators.required),
+            "Status": new FormControl("", Validators.required),
+            "Notation": new FormControl("", Validators.maxLength(20))
+        });
+        this.myForm.controls["Name"].reset;
+    }
+    submit() {
+        console.log(this.myForm);
+        this.myForm.untouched;
+    }
     ngOnInit() {
         this.loadTechnique();
     }
@@ -32,7 +77,6 @@ export class TechniqueComponent implements OnInit {
     loadTechnique() {
         this.techniqueService.getTechniques()
             .subscribe((data: Technique[]) => this.techniques = data);
-        console.log(this.techniques);
     }
     sort(parametrSort: string, AscorDsc: string) {
         switch (parametrSort) {
@@ -126,11 +170,9 @@ export class TechniqueComponent implements OnInit {
         this.create = false;
     }
     delete(t: Technique) {
-        this.techniqueService.deleteTechnique(t.id)
-            .subscribe(data => this.loadTechnique());
-    }
-    add() {
-        this.cancel();
-        this.create = true;
+        if (confirm('Вы уверены, что хотите удалить элемент??')) {
+            this.techniqueService.deleteTechnique(t.id)
+                .subscribe(data => this.loadTechnique());
+        }
     }
 }

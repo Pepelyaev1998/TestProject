@@ -1,26 +1,34 @@
 ﻿using App.DAL.Models;
-using Microsoft.EntityFrameworkCore;
-using System;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace App.DAL.Repositories
 {
-    public class EntityRepository : DbContext, IEntityRepository
+    public sealed class EntityRepository : DbContext, IEntityRepository
     {
-        private readonly DbSet<User> users;
-        private readonly DbSet<Technique> techniques;
+        private readonly DbSet<User> _users;
+        private readonly DbSet<Technique> _techniques;
+        //private readonly DbSet<Room> rooms;
+        //private readonly DbSet<TechniqueAndType> techniqueAngTypes;
+        //private readonly DbSet<TypeTechnique> typeTechniques;
+        //private readonly DbSet<LocationPoint> locationPoints;
 
         public EntityRepository(DbContextOptions dbContextOptions)
             : base(dbContextOptions)
         {
           //  Database.Migrate();
          //   Database.EnsureCreated();
-            users = Set<User>();
-            techniques = Set<Technique>();
+            _users = Set<User>();
+            _techniques = Set<Technique>();
+            //rooms = Set<Room>();
+            //techniqueAngTypes = Set<TechniqueAndType>();
+            //typeTechniques = Set<TypeTechnique>();
+            //locationPoints = Set<LocationPoint>();
         }
 
-        public IQueryable<User> Users => users.AsNoTracking();
-        public IQueryable<Technique> Techniques => techniques.AsNoTracking();
+        public IQueryable<User> Users => _users.AsNoTracking();
+        public IQueryable<Technique> Techniques => _techniques.AsNoTracking();
+        //public IQueryable<Room> Rooms => rooms.Include(t => t.Technique).AsNoTracking();
         public void SaveEntity(Entity entity)
         {
 

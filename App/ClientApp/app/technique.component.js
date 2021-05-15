@@ -12,23 +12,61 @@ import { TechniqueService } from './technique.service';
 import { Technique } from './technique';
 import { Status } from './status';
 import { LoginService } from './login.service';
-import { DomSanitizer } from '@angular/platform-browser';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 var TechniqueComponent = /** @class */ (function () {
-    function TechniqueComponent(techniqueService, logServ, sanitizer) {
+    function TechniqueComponent(techniqueService, logServ, router) {
         this.techniqueService = techniqueService;
         this.logServ = logServ;
-        this.sanitizer = sanitizer;
+        this.router = router;
         this.technique = new Technique();
         this.create = false;
         this.searchStr = '';
         this.values = Status;
         this.fileUrl = '';
+        //private isModalDialogVisible: boolean = false;
+        this.showBlock = false;
+        this.myForm = new FormGroup({
+            "Name": new FormControl("", [Validators.required, Validators.max(20)]),
+            "Model": new FormControl("", Validators.required),
+            "Number": new FormControl("", Validators.required),
+            "Amount": new FormControl("", Validators.required),
+            "Status": new FormControl("", Validators.required),
+            "Notation": new FormControl("", Validators.maxLength(20))
+        });
+        this.myForm.controls["Name"].reset;
     }
+    TechniqueComponent.prototype.showBlockHidden = function () {
+        this.showBlock = !this.showBlock;
+    };
+    //public showDialog() {
+    //    this.isModalDialogVisible = true;
+    //}
+    //public closeModal(isConfirmed: boolean) {
+    //    this.isModalDialogVisible = false;
+    //}
     TechniqueComponent.prototype.exportAsXLSX = function () {
         this.techniqueService.exportToExel().subscribe();
     };
     TechniqueComponent.prototype.exit = function () {
         this.logServ.logout();
+    };
+    TechniqueComponent.prototype.location = function () {
+        this.router.navigate(['/location']);
+    };
+    TechniqueComponent.prototype.UpdateForm = function () {
+        this.myForm = new FormGroup({
+            "Name": new FormControl("", [Validators.required, Validators.max(20)]),
+            "Model": new FormControl("", Validators.required),
+            "Number": new FormControl("", Validators.required),
+            "Amount": new FormControl("", Validators.required),
+            "Status": new FormControl("", Validators.required),
+            "Notation": new FormControl("", Validators.maxLength(20))
+        });
+    };
+    TechniqueComponent.prototype.submit = function () {
+        console.log(this.myForm);
+        this.myForm.untouched;
     };
     TechniqueComponent.prototype.ngOnInit = function () {
         this.loadTechnique();
@@ -37,7 +75,6 @@ var TechniqueComponent = /** @class */ (function () {
         var _this = this;
         this.techniqueService.getTechniques()
             .subscribe(function (data) { return _this.techniques = data; });
-        console.log(this.techniques);
     };
     TechniqueComponent.prototype.sort = function (parametrSort, AscorDsc) {
         switch (parametrSort) {
@@ -127,12 +164,10 @@ var TechniqueComponent = /** @class */ (function () {
     };
     TechniqueComponent.prototype.delete = function (t) {
         var _this = this;
-        this.techniqueService.deleteTechnique(t.id)
-            .subscribe(function (data) { return _this.loadTechnique(); });
-    };
-    TechniqueComponent.prototype.add = function () {
-        this.cancel();
-        this.create = true;
+        if (confirm('Вы уверены, что хотите удалить элемент??')) {
+            this.techniqueService.deleteTechnique(t.id)
+                .subscribe(function (data) { return _this.loadTechnique(); });
+        }
     };
     TechniqueComponent = __decorate([
         Component({
@@ -140,7 +175,7 @@ var TechniqueComponent = /** @class */ (function () {
             templateUrl: './technique.component.html',
             providers: [TechniqueService, LoginService]
         }),
-        __metadata("design:paramtypes", [TechniqueService, LoginService, DomSanitizer])
+        __metadata("design:paramtypes", [TechniqueService, LoginService, Router])
     ], TechniqueComponent);
     return TechniqueComponent;
 }());

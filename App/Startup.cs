@@ -62,6 +62,14 @@ namespace App
                     .ForMember("Password", opt => opt.MapFrom(c => c.Password));
                     cfg.CreateMap<Technique, TechniqueDTO>();
                     cfg.CreateMap<User, UserDTO>();
+                    cfg.CreateMap<Room, RoomDTO>();
+                    cfg.CreateMap<TechniqueAndType,TechniqueAndTypeDTO>();
+                    cfg.CreateMap<TypeTechnique,TypeTechniqueDTO>();
+                    cfg.CreateMap<LocationPoint,LocationPointDTO>();
+                    cfg.CreateMap<RoomDTO,DAL.Models.Room>();
+                    cfg.CreateMap<TechniqueAndTypeDTO,DAL.Models.TechniqueAndType>();
+                    cfg.CreateMap<TypeTechniqueDTO,DAL.Models.TypeTechnique>();
+                    cfg.CreateMap<LocationPointDTO,DAL.Models.LocationPoint>();
                 });
         }
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

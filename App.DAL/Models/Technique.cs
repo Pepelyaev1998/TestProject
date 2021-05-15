@@ -10,5 +10,6 @@ namespace App.DAL.Models
         public int Amount { get; set; }
         public StatusModel Status { get; set; }
         public string Notation { get; set; }
+       // public TypeTechnique TypeTechnique { get; set; }
     }
 }

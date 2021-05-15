@@ -16,21 +16,38 @@
     <None Remove="ClientApp\app\TokenInterceptor.ts" />
     <None Remove="ClientApp\main.ts" />
     <None Remove="ClientApp\polyfills.ts" />
+    <None Remove="favicon.ico" />
     <None Remove="webpack.config.js" />
   </ItemGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Remove="ClientApp\app\location.component.ts" />
+    <TypeScriptCompile Remove="ClientApp\app\location.service.ts" />
+    <TypeScriptCompile Remove="ClientApp\app\locationPoint.ts" />
     <TypeScriptCompile Remove="ClientApp\app\login.component.ts" />
     <TypeScriptCompile Remove="ClientApp\app\login.service.ts" />
+    <TypeScriptCompile Remove="ClientApp\app\Room.ts" />
     <TypeScriptCompile Remove="ClientApp\app\start.component.ts" />
+    <TypeScriptCompile Remove="ClientApp\app\techniquAndType.ts" />
     <TypeScriptCompile Remove="ClientApp\app\technique.service.ts" />
     <TypeScriptCompile Remove="ClientApp\app\technique.ts" />
+    <TypeScriptCompile Remove="ClientApp\app\TypeTechnique.ts" />
     <TypeScriptCompile Remove="ClientApp\app\user.ts" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="ClientApp\app\technique.component.html" />
+    <Content Include="css\site.less" />
+    <Content Include="favicon.ico">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="gulpfile.js" />
     <Content Include="webpack.config.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\js.js" />
   </ItemGroup>
 
   <ItemGroup>

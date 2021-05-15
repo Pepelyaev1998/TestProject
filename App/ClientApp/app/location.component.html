@@ -1,0 +1,298 @@
+﻿<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" />
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="css/site.css">
+    <style>
+        canvas {
+            border: 2px solid #ccc;
+        }
+    </style>
+</head>
+<nav class="navbar navbar-expand-lg navbar-light bg-light m-0 p-0">
+    <a class="navbar-brand">
+        Intansition
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="" onclick="return false" (click)="showBlockHidden()">Руководство пользователя</a>
+            </li>
+            <li class="nav-item">
+            </li>
+        </ul><span class="navbar-text">
+
+            <button type="submit" class="btn btn-default bg-info" (click)="showModalLocation=true" data-toggle="modal" data-target="#exampleModalLong"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Показать локации</button>
+        </span>
+        <span class="navbar-text">
+
+            <button type="submit" class="btn btn-default bg-info" (click)="UpdateFormRoom(); showModalRoom=true" data-toggle="modal" data-target="#exampleModalLong" [disabled]="!visibleButtonCreate()"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Создать</button>
+        </span>
+        <span class="navbar-text">
+
+            <button type="submit" class="btn btn-default bg-info" routerLink="/technique"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i>&nbsp;На главную</button>
+        </span>
+
+    </div>
+    <div class="modal" id="exampleModalLong" [ngClass]="{'show':showModalLocation}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="width:400px;" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Просмотр локаций</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="showModalLocation=false">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style=" overflow-y: scroll; max-height: 450px;">
+                    <form [formGroup]="myForm" novalidate (ngSubmit)="submit()">
+                        <input type="text" class="form-control pull-right" [(ngModel)]="searchStr " placeholder="Поиск локации">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <td>
+                                        <strong><em>Наименование комнаты</em></strong>
+                                    </td>
+                                    <td><strong><em>Размер</em></strong>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let room of list | search:searchStr">
+                                    <td>{{room.name}}</td>
+                                    <td>
+                                        {{room.length}}x{{room.width}}
+                                    </td>
+                                    <td>
+                                        <i class="fa fa-eye" aria-hidden="true" role="button" (click)="animate(room); showModalLocation=false" title="Посмотреть"></i>&nbsp;
+                                        <i class="glyphicon glyphicon-trash" aria-hidden="true" role="button" (click)="deleteRoom(room);" title="Удалить"></i>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-default bg-info" value="Отмена" (click)="showModalLocation=false">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="exampleModalLong" [ngClass]="{'show':showModalRoom}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="width:400px;" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Добавление новой локации</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="clear(); showModalRoom=false">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style=" overflow-y: scroll; max-height: 450px;">
+                    <form [formGroup]="myFormRoom" novalidate (ngSubmit)="submit()">
+                        <input type="text" [(ngModel)]="room.name" formControlName="Name" class="form-control mb-1" name="name" placeholder="Наименование комнаты" />
+                        <div class="alert alert-danger"
+                             *ngIf="myFormRoom.controls['Name'].invalid && myFormRoom.controls['Name'].touched">
+                            name invalid!
+                        </div>
+                        <input type="number" [(ngModel)]="room.length" formControlName="Length" class="form-control mb-1" name="Length" placeholder="Длина комнаты" />
+                        <div class="alert alert-danger"
+                             *ngIf="myFormRoom.controls['Length'].invalid && myFormRoom.controls['Length'].touched">
+                            Length required, max value {{canvasEl.height-20}}, min 20!
+                        </div>
+                        <input type="number" [(ngModel)]="room.width" formControlName="Width" class="form-control mb-1" name="Width" placeholder="Ширина комнаты" />
+                        <div class="alert alert-danger"
+                             *ngIf="myFormRoom.controls['Width'].invalid && myFormRoom.controls['Width'].touched">
+                            Width required, max value {{canvasEl.width-20}}, min 20!
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-default bg-info" value="Отобразить" (click)="createRoom(); showModalRoom=false" [disabled]="myFormRoom.invalid">
+                    <input type="submit" class="btn btn-default bg-info" value="Отмена" (click)="clear(); showModalRoom=false">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="exampleModalLong" [ngClass]="{'show':showModal}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="width:400px;" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Добавление новой локации</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="showModal=false">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style=" overflow-y: scroll; max-height: 450px;">
+                    <form [formGroup]="myForm" novalidate (ngSubmit)="submit()">
+                        <input type="text" [(ngModel)]="room.name" formControlName="Name" readonly class="form-control mb-1" name="name" placeholder="Наименование комнаты" />
+                        <div class="alert alert-danger"
+                             *ngIf="myForm.controls['Name'].invalid && myForm.controls['Name'].touched">
+                            name invalid!
+                        </div>
+                        <input type="number" [(ngModel)]="room.length" formControlName="Length" readonly class="form-control mb-1" name="Length" placeholder="Длина комнаты" />
+                        <div class="alert alert-danger"
+                             *ngIf="myForm.controls['Length'].invalid && myForm.controls['Length'].touched">
+                            Length required, max value {{canvasEl.height-20}}!
+                        </div>
+                        <input type="number" [(ngModel)]="room.width" formControlName="Width" readonly class="form-control mb-1" name="Width" placeholder="Ширина комнаты" />
+                        <div class="alert alert-danger"
+                             *ngIf="myForm.controls['Width'].invalid && myForm.controls['Width'].touched">
+                            Width required, max value {{canvasEl.width -20}}!
+                        </div>
+                        <span class="input-group-addon">Выберите технику</span>
+                        <select [(ngModel)]="technique" class="form-control mb-1" formControlName="Technique">
+                            <option *ngFor="let t of techniqueOnDb" [ngValue]="t">{{t.name}} {{t.model}}</option>
+                        </select>
+                        <div class="alert alert-danger"
+                             *ngIf="(myForm.controls['Technique'].invalid && myForm.controls['Technique'].touched) || (myForm.controls['Technique'].touched && technique.name==undefined ) ">
+                            Technique invalid!
+                        </div>
+
+                        <input type="number" [(ngModel)]="typeTechnique.length" formControlName="LengthTechnique" class="form-control mb-1" name="LengthTechnique" placeholder="Длина техники" />
+                        <div class="alert alert-danger"
+                             *ngIf="myForm.controls['LengthTechnique'].invalid && myForm.controls['LengthTechnique'].touched">
+                            Length required, max value {{this.room.length - 40}}!
+                        </div>
+                        <input type="number" [(ngModel)]="typeTechnique.width" formControlName="WidthTechnique" class="form-control mb-1" name="WidthTechnique" placeholder="Ширина техники" />
+                        <div class="alert alert-danger"
+                             *ngIf="myForm.controls['WidthTechnique'].invalid && myForm.controls['WidthTechnique'].touched">
+                            Width required, max value {{this.room.width - 40}}!
+                        </div>
+                        <span class="input-group-addon">Выберите уровень</span><div *ngIf="myForm.controls['LayerTechnique'].touched">
+                            Помогает при наложении объектов друг на друга, первый уровень считается самым нижним и непрозрачным.
+                            Пятый уровень, соответственно, самый прозрачный и последний, считается самым верхним.
+                        </div>
+                        <select [(ngModel)]="typeTechnique.layer" class="form-control mb-1" formControlName="LayerTechnique">
+                            <option [ngValue]=1>1</option>
+                            <option [ngValue]=0.8>2</option>
+                            <option [ngValue]=0.6>3</option>
+                            <option [ngValue]=0.4>4</option>
+                            <option [ngValue]=0.2>5</option>
+                        </select>
+                        <div class="alert alert-danger"
+                             *ngIf="myForm.controls['LayerTechnique'].invalid && myForm.controls['LayerTechnique'].touched">
+                            Layer Technique invalid!
+                        </div>
+                        <span class="input-group-addon">Цвет</span>
+                        <input type="color" id="color" [(ngModel)]="color" formControlName="ColorTechnique" class="form-control mb-1" name="ColorTechnique">&nbsp;
+                        <div class="alert alert-danger"
+                             *ngIf="myForm.controls['ColorTechnique'].invalid && myForm.controls['ColorTechnique'].touched">
+                            Color required!
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-default bg-info" value="Отобразить" (click)="animate(); showModal=false" [disabled]="myForm.invalid || technique.name==undefined">
+                    <input type="submit" class="btn btn-default bg-info" value="Отмена" (click)=" showModal=false">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="showTech" class="modal" id="exampleModalLong" [ngClass]="{'show':showModalTechnique}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="width:400px;" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Просмотр техники</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeT(); showModalTechnique=false">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style=" overflow-y: scroll; max-height: 450px;">
+                    <form [formGroup]="myForm" novalidate (ngSubmit)="submit()">
+                        <span class="input-group-addon">Наименование комнаты</span>
+                        <input type="text" [(ngModel)]="room.name" formControlName="Name" readonly class="form-control mb-1" name="name" placeholder="Наименование комнаты" />
+                        <span class="input-group-addon">Наименование техники</span>
+                        <input type="text" [(ngModel)]="technique.name" [ngModelOptions]="{standalone: true}" readonly class="form-control mb-1" />
+                        <span class="input-group-addon">Модель</span>
+                        <input type="text" [(ngModel)]="technique.model" [ngModelOptions]="{standalone: true}" readonly class="form-control mb-1" />
+                        <span class="input-group-addon">Длина</span>
+                        <input type="text" [(ngModel)]="typeTechnique.length" [ngModelOptions]="{standalone: true}" readonly class="form-control mb-1" />
+                        <span class="input-group-addon">Ширина</span>
+                        <input type="text" [(ngModel)]="typeTechnique.width" [ngModelOptions]="{standalone: true}" readonly class="form-control mb-1" />
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-default bg-info" value="Отмена" (click)="closeT(); showModalTechnique=false">
+                </div>
+            </div>
+        </div>
+    </div>
+</nav><div *ngIf="showBlock" class="jumbotron">
+    <h1 class="display-4">Itransition!</h1>
+    <p class="lead">Данная страница позволяет наглядно увидеть расположение объектов техники, а также комнату, в которой находится этот объект. Также позволяет изменять локацию.</p>
+    <hr class="my-4">
+    <p>
+        При нажатии на клавишу "Показать локации" открывается окно, с возможностью посмотреть, какие комнаты уже есть, а также возможно создать комнату самому.
+        Для того, чтобы управлять объктом, нужно нажать левой кнопкой мыши по объету.
+        Клавиша клавиатуры W-переносит объект вверх, S-вниз,
+        A-влево, D-вправо. Также можно переносить объект удерживая левую клавишу мыши и перетаскивая ее.
+        Двойной щелчок левой клавишей мыши по объекту выведет инфорция о нём. При прокрутке колесом мыщи, будет масштабироваться содержимое.
+        Весь данный функционал, можно найти кнопках экрана.
+        Также можно увидеть только определенную технику в комнате, например мониторы, при нажатии последний кнопки с выпадающим списком.
+
+    </p>
+    <p class="lead">
+        <input type="submit" class="btn btn-default bg-info" value="Скрыть" (click)="showBlockHidden()">
+    </p>
+</div>
+<div class="container pt-0 pb-0 mt-0 mb-0 ">
+    <div class="row pt-0 pb-0 mt-0 mb-0">
+        <div class="col-md-offset-4 col-md-4 form-horizontal pt-0 pb-0 mt-0 mb-0">
+            <span class="heading pt-3 pb-3 mt-3 mb-3">ЛОКАЦИЯ</span>
+        </div>
+    </div>
+</div>
+<div class="works-image text-center mb-3">
+    <div class="mb-2">
+        <button type="submit" class="btn btn-default bg-info" (click)="DownUp(4)" [disabled]="previousSelectedTechnique == null || listTechnique.length==0" data-toggle="modal" data-target="#exampleModalLong"><i class="fa fa-arrow-down" aria-hidden="true"></i>&nbsp;Вниз</button>
+        &nbsp;<button type="submit" class="btn btn-default bg-info" (click)="DownUp(-4)" [disabled]="previousSelectedTechnique == null || listTechnique.length==0" data-toggle="modal" data-target="#exampleModalLong"> <i class="fa fa-arrow-up" aria-hidden="true"></i>&nbsp;Вверх</button>&nbsp;
+        <button type="submit" class="btn btn-default bg-info" (click)="leftRight(4)" [disabled]="previousSelectedTechnique == null || listTechnique.length==0" data-toggle="modal" data-target="#exampleModalLong"><i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp;Вправо</button>&nbsp;
+        <button type="submit" class="btn btn-default bg-info" (click)="leftRight(-4)" [disabled]="previousSelectedTechnique == null || listTechnique.length==0" data-toggle="modal" data-target="#exampleModalLong"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp;Влево</button>&nbsp;
+        <input type="color" id="color" [(ngModel)]="color">&nbsp;
+        <button type="submit" class="btn btn-default bg-info" (click)="updateColor();" [disabled]="previousSelectedTechnique == null || listTechnique.length==0" data-toggle="modal" data-target="#exampleModalLong"><i class="fa fa-brush" aria-hidden="true"></i>&nbsp;Изменить цвет</button>&nbsp;
+        <button type="submit" class="btn btn-default bg-info" (click)="deleteTechniqueInRoom();" [disabled]="previousSelectedTechnique == null || listTechnique.length==0" data-toggle="modal" data-target="#exampleModalLong"><i class="glyphicon glyphicon-trash"></i>&nbsp;Удалить</button>&nbsp;
+        <button type="submit" class="btn btn-default bg-info" (click)="scaling(0.05)" [disabled]="listTechnique.length==0" data-toggle="modal" data-target="#exampleModalLong">+</button>
+        &nbsp;
+        <button type="submit" class="btn btn-default bg-info" (click)="scaling(-0.05)" [disabled]="listTechnique.length==0" data-toggle="modal" data-target="#exampleModalLong">-</button>
+        &nbsp;
+        <select (click)="select();unique();" [(ngModel)]="selectTechnique" class="btn btn-default bg-info" [disabled]="listTechnique.length==0" data-toggle="modal" data-target="#exampleModalLong">
+            <option value="">---Вся техника---</option>
+            <option *ngFor="let t of nameLayer" [ngValue]="t">{{t.technique.name}}</option>
+        </select>
+    </div>
+    <canvas #canvas (dblclick)="showTechnique($event);showModalTechnique=true;" (mousedown)="canvasClick($event)" (mousemove)="dragTechnique($event)" (mouseout)="stopDragging()" (mouseup)="stopDragging()"></canvas>
+    <h4 class="item-name">Описание комнаты:</h4>
+    <p class="item-type">
+        Наименование комнаты:<span *ngIf="room.name!=undefined"> {{room.name}}</span>
+    </p>
+    <p class="item-type">Размер комнаты:<span *ngIf="(room.length!=undefined || room.weight!=undefined)"> {{room.length}}x{{room.width}}</span></p>
+    <p class="item-type">Техника:<span *ngFor="let item of techniques"> {{item.name}} {{item.model}} </span></p>
+    <p class="item-type">Размер техники соответственно:<span *ngFor="let item of typeTechniques"> {{item.length}}<span *ngIf="item.length != undefined">x</span>{{item.width}} </span></p>
+    <button type="submit" class="btn btn-default bg-info" (click)="save()" [disabled]="disabledSave" data-toggle="modal" data-target="#exampleModalLong"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Сохранить</button>&nbsp;
+    <button type="submit" class="btn btn-default bg-info" (click)="clear()" data-toggle="modal" data-target="#exampleModalLong"><i class="glyphicon glyphicon-floppy-remove" aria-hidden="true"></i>&nbsp;Очистить</button>&nbsp;
+    <button type="submit" class="btn btn-default bg-info" (click)="closeT(); showModal=true" [disabled]="disabledAddLocation" data-toggle="modal" data-target="#exampleModalLong"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Добавить технику</button>&nbsp;
+    <!--<div class="overlay mt-2 ml-5 pl-5">
+        <div class="item-info text-left ml-5 pl-4">
+            <h4 class="item-name">Описание комнаты:</h4>
+            <p class="item-type">
+                Наименование комнаты:<span *ngIf="room.name!=undefined"> {{room.name}}</span>
+            </p>
+            <p class="item-type">Размер комнаты:<span *ngIf="(room.length!=undefined || room.weight!=undefined)"> {{room.length}}x{{room.width}}</span></p>
+            <p class="item-type">Техника:<span *ngFor="let item of techniques"> {{item.name}} {{item.model}} </span></p>
+            <p class="item-type">Размер техники соответственно:<span *ngFor="let item of typeTechniques"> {{item.length}}<span *ngIf="item.length != undefined">x</span>{{item.width}} </span></p>
+            <button type="submit" class="btn btn-default bg-info" (click)="save()" [disabled]="disabledSave" data-toggle="modal" data-target="#exampleModalLong"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Сохранить</button>&nbsp;
+            <button type="submit" class="btn btn-default bg-info" (click)="clear()" data-toggle="modal" data-target="#exampleModalLong"><i class="glyphicon glyphicon-floppy-remove" aria-hidden="true"></i>&nbsp;Очистить</button>&nbsp;
+            <button type="submit" class="btn btn-default bg-info" (click)="showModal=true" [disabled]="disabledAddLocation" data-toggle="modal" data-target="#exampleModalLong"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Добавить технику</button>&nbsp;
+        </div>
+    </div>-->
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+">
+
+
+

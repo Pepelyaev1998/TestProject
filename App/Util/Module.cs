@@ -1,6 +1,7 @@
 ﻿using System;
 using App.BLL.Infrastructure;
 using App.BLL.Interfaces;
+using App.BLL.Services.Location;
 using App.BLL.Services.Technique;
 using App.BLL.Services.User;
 using AutoMapper.Configuration;
@@ -17,10 +18,11 @@ namespace App.Util
 
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<ITechniqueService, TechniqueService>();
+            services.AddTransient<ILocationService, LocationService>();
             ServiceModule.Register(services, configuration);
 
         }
 
-       
+
     }
 }
